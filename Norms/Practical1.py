@@ -1,80 +1,34 @@
-import math
+# Matrix
+A = [[-1, 0, 6],[1, -1, 5], [8, 4, -3]]
 
-n = 3
-p = 3
+#Vector
+b = [2, 2, -7]
 
-# Variant 1 matrix
-A = [
-    [3, -7, 1],
-    [9, 8, -7],
-    [5, -2, 2]
-]
+# N.O.V
+v1 = sum(abs(x) for x in b)
+v2 = (sum(x**2 for x in b)) ** (1/2)
+v3 = sum(abs(x)**3 for x in b) ** (1/3)
+vc = max(abs(x) for x in b)
 
-# Variant 1 vector
-b = [1, 5, -3]
+# N.O.M
+m1 = max(sum(abs(A[i][j]) for i in range(3)) for j in range(3))
+m2 = (sum(A[i][j]**2 for i in range(3) for j in range(3))) ** (1/2)
+mc = max(sum(abs(A[i][j]) for j in range(3)) for i in range(3))
 
-# Vector p-norms
-x = []
+# A*b
+Ab = [sum(A[i][j] * b[j] for j in range(3)) for i in range(3)]
 
-for j in range(1, p + 1):
-    s = 0
+# Norms of Ab
+ab1 = sum(abs(x) for x in Ab)
+ab2 = (sum(x**2 for x in Ab)) ** (1/2)
+abc = max(abs(x) for x in Ab)
 
-    for i in range(n):
-        h = abs(b[i])
-        s += h ** j
+print("Vector norms:", round(v1, 4), round(v2, 4), round(v3, 4), round(vc, 4))
+print("Matrix norms:", round(m1, 4), round(m2, 4), round(mc, 4))
+print("Ab =", Ab)
+print("Norms of Ab:", round(ab1, 4), round(ab2, 4), round(abc, 4))
 
-    x.append(s ** (1.0 / j))
-
-# Vector infinity norm
-y = 0
-
-for i in range(n):
-    y = max(y, abs(b[i]))
-
-# Matrix 1-norm:
-# maximum absolute column sum
-u = 0
-
-for j in range(n):
-    h = 0
-
-    for i in range(n):
-        h += abs(A[i][j])
-
-    u = max(u, h)
-
-# Matrix 2-norm according to the lecture program:
-# square root of the sum of squares
-v = 0
-
-for i in range(n):
-    for j in range(n):
-        v += A[i][j] ** 2
-
-v = math.sqrt(v)
-
-# Matrix infinity norm:
-# maximum absolute row sum
-w = 0
-
-for i in range(n):
-    h = 0
-
-    for j in range(n):
-        h += abs(A[i][j])
-
-    w = max(w, h)
-
-# Output
-print("Vector norms:")
-print(f"||b||1   = {x[0]:.6f}")
-print(f"||b||2   = {x[1]:.6f}")
-print(f"||b||3   = {x[2]:.6f}")
-print(f"||b||inf = {y:.6f}")
-
-print()
-
-print("Matrix norms:")
-print(f"||A||1   = {u:.6f}")
-print(f"||A||2   = {v:.6f}")
-print(f"||A||inf = {w:.6f}")
+print("Consistency:")
+print("||Ab||_1 <= ||A||_1 * ||b||_1 :", ab1 <= m1*v1)
+print("||Ab||_2 <= ||A||_2 * ||b||_2 :", ab2 <= m2*v2)
+print("||Ab||_c <= ||A||_c * ||b||_c :", abc <= mc*vc)
