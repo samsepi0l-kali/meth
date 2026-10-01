@@ -7,6 +7,10 @@ a = [[7, 8, 4, -6],
 #Vector
 b = [-126, -42, -115, -67]
 
+
+a_original = [row[:] for row in a]
+
+
 def gaussian_pivot(a, b, l):
     n = len(a)
     z = [[float(i == j) for j in range(n)] for i in range(n)]
@@ -42,12 +46,11 @@ def gaussian_pivot(a, b, l):
             for j in range(n):
                 z[i][j] += h * z[k][j]
 
-
     #Determinant
     y = 1 - 2 * (p % 2)
 
-    #Backward path 
-    for k in range(n-1, -1 ,-1):
+    #Backward path
+    for k in range(n - 1, -1, -1):
         y *= a[k][k]
 
         h = sum(a[k][i] * x[i] for i in range(k + 1, n))
@@ -57,12 +60,31 @@ def gaussian_pivot(a, b, l):
             h = sum(a[k][i] * z[i][j] for i in range(k + 1, n))
             z[k][j] = (z[k][j] - h) / a[k][k]
 
-    
+    #Print
     print("x =", " ".join(f"{v:.7f}" for v in x))
     print("y =", f"{y:.7f}")
     print("z:")
     for row in z:
         print("  ", "\t".join(f"{v:.7f}" for v in row))
 
+    return x, y, z
+
+
 #Function call
-gaussian_pivot(a, b, 1)
+x, y, z = gaussian_pivot(a, b, 1)
+
+
+#Verify A · A⁻¹ = I
+print("\nCheck A · A⁻¹:")
+for i in range(4):
+    row_check = []
+    for j in range(4):
+        total = 0.0
+        for k in range(4):
+            total += a_original[i][k] * z[k][j]
+        if abs(total) < 1e-9:
+            total = 0.0
+        elif abs(total - 1) < 1e-9:
+            total = 1.0
+        row_check.append(total)
+    print("  ", "\t".join(f"{v:.7f}" for v in row_check))
