@@ -64,6 +64,7 @@ def gaussian_pivot(a, b, l):
     print("x =", " ".join(f"{v:.7f}" for v in x))
     print("y =", f"{y:.7f}")
     print("z:")
+
     for row in z:
         print("  ", "\t".join(f"{v:.7f}" for v in row))
 
