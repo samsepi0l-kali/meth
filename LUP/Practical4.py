@@ -11,9 +11,9 @@ b = [-126, -42, -115, -67]
 a_original = [row[:] for row in a]
 
 
-def gaussian_pivot(a, b, l):
+def lup_decomposition(a, b, l):
     n = len(a)
-    z = [[float(i == j) for j in range(n)] for i in range(n)]
+    q = list(range(n))
     p = 0
     x = [0.0] * n
 
@@ -29,8 +29,7 @@ def gaussian_pivot(a, b, l):
                     g, m = f, i
             if m != k:
                 a[k], a[m] = a[m], a[k]
-                b[k], b[m] = b[m], b[k]
-                z[k], z[m] = z[m], z[k]
+                q[k], q[m] = q[m], q[k]
                 p += 1
 
         if a[k][k] == 0:
@@ -39,40 +38,66 @@ def gaussian_pivot(a, b, l):
 
         #Elimination
         for i in range(k + 1, n):
-            h = -a[i][k] / a[k][k]
-            for j in range(k, n):
-                a[i][j] += h * a[k][j]
-            b[i] += h * b[k]
-            for j in range(n):
-                z[i][j] += h * z[k][j]
+            a[i][k] = a[i][k] / a[k][k]
+            for j in range(k + 1, n):
+                a[i][j] -= a[i][k] * a[k][j]
 
     #Determinant
     y = 1 - 2 * (p % 2)
-
-    #Backward path
-    for k in range(n - 1, -1, -1):
+    for k in range(n):
         y *= a[k][k]
 
-        h = sum(a[k][i] * x[i] for i in range(k + 1, n))
-        x[k] = (b[k] - h) / a[k][k]
+    #Backward path
+    d = [b[q[i]] for i in range(n)]
 
-        for j in range(n):
-            h = sum(a[k][i] * z[i][j] for i in range(k + 1, n))
-            z[k][j] = (z[k][j] - h) / a[k][k]
+    z = [0.0] * n
+    for i in range(n):
+        s = d[i]
+        for j in range(i):
+            s -= a[i][j] * z[j]
+        z[i] = s
+
+    for i in range(n - 1, -1, -1):
+        s = z[i]
+        for j in range(i + 1, n):
+            s -= a[i][j] * x[j]
+        x[i] = s / a[i][i]
+
+    z_matrix = [[0.0] * n for _ in range(n)]
+
+    for col in range(n):
+        d = [1.0 if q[i] == col else 0.0 for i in range(n)]
+
+        z = [0.0] * n
+        for i in range(n):
+            s = d[i]
+            for j in range(i):
+                s -= a[i][j] * z[j]
+            z[i] = s
+
+        xcol = [0.0] * n
+        for i in range(n - 1, -1, -1):
+            s = z[i]
+            for j in range(i + 1, n):
+                s -= a[i][j] * xcol[j]
+            xcol[i] = s / a[i][i]
+
+        for i in range(n):
+            z_matrix[i][col] = xcol[i]
 
     #Print
     print("x =", " ".join(f"{v:.7f}" for v in x))
     print("y =", f"{y:.7f}")
     print("z:")
 
-    for row in z:
+    for row in z_matrix:
         print("  ", "\t".join(f"{v:.7f}" for v in row))
 
-    return x, y, z
+    return x, y, z_matrix
 
 
 #Function call
-x, y, z = gaussian_pivot(a, b, 1)
+x, y, z = lup_decomposition(a, b, 1)
 
 
 #Verify A · A⁻¹ = I
