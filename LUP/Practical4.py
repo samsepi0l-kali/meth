@@ -42,6 +42,23 @@ def lup_decomposition(a, b, l):
             for j in range(k + 1, n):
                 a[i][j] -= a[i][k] * a[k][j]
 
+    #Check PA = LU
+    print("\nCheck PA = LU:")
+    for i in range(n):
+        row_check = []
+        for j in range(n):
+            pa = a_original[q[i]][j]
+            lu = 0.0
+            for k in range(n):
+                l_ik = a[i][k] if i > k else (1.0 if i == k else 0.0)
+                u_kj = a[k][j] if k <= j else 0.0
+                lu += l_ik * u_kj
+            if abs(pa - lu) < 1e-9:
+                row_check.append(0.0)
+            else:
+                row_check.append(pa - lu)
+        print("  ", "\t".join(f"{v:.7f}" for v in row_check))
+
     #Determinant
     y = 1 - 2 * (p % 2)
     for k in range(n):
