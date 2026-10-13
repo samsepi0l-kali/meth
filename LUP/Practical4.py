@@ -67,13 +67,14 @@ def lup_decomposition(a, b, l):
     #Backward path
     d = [b[q[i]] for i in range(n)]
 
+    #Solving for LZ = d
     z = [0.0] * n
     for i in range(n):
         s = d[i]
         for j in range(i):
             s -= a[i][j] * z[j]
         z[i] = s
-
+    #Solving for UX = z
     for i in range(n - 1, -1, -1):
         s = z[i]
         for j in range(i + 1, n):
@@ -82,9 +83,11 @@ def lup_decomposition(a, b, l):
 
     z_matrix = [[0.0] * n for _ in range(n)]
 
+    #Inverse Matrix
     for col in range(n):
         d = [1.0 if q[i] == col else 0.0 for i in range(n)]
 
+        #Solving LZ = d for each column after each iteration
         z = [0.0] * n
         for i in range(n):
             s = d[i]
