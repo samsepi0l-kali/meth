@@ -12,15 +12,11 @@ e = 0.01
 def check_eigenpair(n, c, lam, x):
     #Residual vector cx - lambdax (should be close to zero)
     r = [0.0] * n
-
     for i in range(n):
         r[i] = 0.0
-
         for j in range(n):
             r[i] = r[i] + c[i][j] * x[j]
-
         r[i] = r[i] - lam * x[i]
-
     return r
 
 
@@ -39,15 +35,12 @@ def jacobi_rotation_method(n, c, e):
             else:
                 v[i][j] = 0.0
 
-
+    #Critertion check
     f = 0.0
-
     for i in range(n - 1):
         for j in range(i + 1, n):
             f = f + a[i][j] * a[i][j]
-
     f = math.sqrt(f)
-
     k = 0
 
     #Iteration starts here
@@ -123,13 +116,10 @@ def jacobi_rotation_method(n, c, e):
 
         #Criterion for iterations termination
         f = 0.0
-
         for i in range(n - 1):
             for j in range(i + 1, n):
                 f = f + a[i][j] * a[i][j]
-
         f = math.sqrt(f)
-
         #Iteration Counter
         k += 1
 
@@ -144,7 +134,7 @@ def jacobi_rotation_method(n, c, e):
     for j in range(n):
         print("  v" + str(j + 1) + " =", "\t".join(f"{v[i][j]:.7f}" for i in range(n)))
 
-    #Check: Av - lambdav for each eigenpair
+    #Check: Av - lambda*v for each eigenpair
     print("Check A*v - lambda*v:")
     for j in range(n):
         x = [v[i][j] for i in range(n)]
