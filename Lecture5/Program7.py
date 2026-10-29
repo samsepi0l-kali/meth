@@ -1,5 +1,3 @@
-import math
-
 #Matrix
 c = [[-8, 5, -7],
      [5, 1, 4],
